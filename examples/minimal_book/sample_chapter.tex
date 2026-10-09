@@ -1,0 +1,90 @@
+\chapter{Measure Theory / 测度论}
+\label{chap:measure_theory}
+
+% Original book page anchor
+\origpage{1}
+
+\begin{quote}
+\begin{enblock}
+\itshape
+``The sets whose measure we can define \term{by virtue of}{依据 / 凭借}{高频数学论证学术表达} the preceding ideas we will call \term[measurable set]{measurable sets}{可测集}{依据外测度能赋予测度的集合}.''
+\hfill --- {\`E}. Borel, 1898
+\end{enblock}
+\begin{zhblock}
+\kaishu
+“依据前述思想我们能够定义其测度的集合，我们将称之为\textbf{可测集}。”
+\hfill —— E. 博雷尔，1898年
+\end{zhblock}
+\end{quote}
+\vspace{1.2em}
+
+\en{This chapter is devoted to the construction of Lebesgue measure in $\Rd$ and the study of measurable functions. We begin with the definition of \term{exterior measure}{外测度}{全空间子集上的广义外测度} for any subset $E \subset \Rd$. This concept is formulated by approximating $E$ with coverings of open boxes or cubes.}
+
+\zh{本章致力于在 $\Rd$ 中建立勒贝格测度，并深入研究可测函数。我们首先引入 $\Rd$ 中任意子集 $E$ 的外测度定义。该概念是通过用开方块或立方体覆盖来逼近 $E$ 而建立的。}
+
+\en{The concept of measurable functions is a natural outgrowth of the idea of measurable sets. Furthermore, the class of measurable functions has the notable property of being closed under taking \term[pointwise limit]{pointwise limits}{逐点极限}{函数序列在每个点处的极限}.}
+
+\zh{可测函数的概念是可测集思想的自然延伸。此外，可测函数类具有一个显著特性：在取逐点极限运算下是封闭的。}
+
+\section{Exterior Measure / 外测度}
+\label{sec:exterior_measure}
+
+\origpage{2}
+
+\begin{definition}
+\begin{enblock}
+If $E$ is any subset of $\Rd$, the \term{exterior measure}{外测度}{集合 $E$ 的外测度} of $E$, denoted by $m_*(E)$, is defined as
+\[
+m_*(E) = \inf \sum_{j=1}^\infty \abs{Q_j},
+\]
+where the infimum is taken over all countable coverings of $E$ by closed cubes $\{Q_j\}_{j=1}^\infty$.
+\end{enblock}
+\begin{zhblock}
+若 $E$ 为 $\Rd$ 的任意子集，则 $E$ 的\textbf{外测度}（记为 $m_*(E)$）定义为
+\[
+m_*(E) = \inf \sum_{j=1}^\infty \abs{Q_j},
+\]
+其中下确界取遍所有用闭立方体序列 $\{Q_j\}_{j=1}^\infty$ 对 $E$ 进行的可数覆盖。
+\end{zhblock}
+\end{definition}
+
+\begin{theorem}[Countable Sub-additivity / 可数次可加性]
+\label{thm:subadditivity}
+\begin{enblock}
+If $E = \bigcup_{j=1}^\infty E_j$, then
+\[
+m_*(E) \le \sum_{j=1}^\infty m_*(E_j).
+\]
+\end{enblock}
+\begin{zhblock}
+若 $E = \bigcup_{j=1}^\infty E_j$，则
+\[
+m_*(E) \le \sum_{j=1}^\infty m_*(E_j).
+\]
+\end{zhblock}
+\end{theorem}
+
+\begin{proof}
+\begin{enblock}
+If $m_*(E_j) = \infty$ for some $j$, the inequality is trivially true. Otherwise, for every $\epsilon > 0$ and each $j$, choose a sequence of cubes $\{Q_{j,k}\}_k$ covering $E_j$ such that
+\[
+\sum_{k=1}^\infty \abs{Q_{j,k}} \le m_*(E_j) + \frac{\epsilon}{2^j}.
+\]
+Then the collection of all cubes $\{Q_{j,k}\}_{j,k}$ covers $E$, so that
+\[
+m_*(E) \le \sum_{j=1}^\infty \sum_{k=1}^\infty \abs{Q_{j,k}} \le \sum_{j=1}^\infty m_*(E_j) + \epsilon.
+\]
+Since $\epsilon > 0$ is arbitrary, the result follows.
+\end{enblock}
+\begin{zhblock}
+若对某个 $j$ 有 $m_*(E_j) = \infty$，则不等式平凡成立。否则，对任意 $\epsilon > 0$ 以及每个 $j$，选取覆盖 $E_j$ 的立方体序列 $\{Q_{j,k}\}_k$，使得
+\[
+\sum_{k=1}^\infty \abs{Q_{j,k}} \le m_*(E_j) + \frac{\epsilon}{2^j}.
+\]
+于是全体立方体族 $\{Q_{j,k}\}_{j,k}$ 构成 $E$ 的覆盖，由此可知
+\[
+m_*(E) \le \sum_{j=1}^\infty \sum_{k=1}^\infty \abs{Q_{j,k}} \le \sum_{j=1}^\infty m_*(E_j) + \epsilon.
+\]
+由于 $\epsilon > 0$ 的任意性，结论即告成立。
+\end{zhblock}
+\end{proof}

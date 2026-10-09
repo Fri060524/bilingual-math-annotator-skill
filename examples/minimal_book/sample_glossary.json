@@ -1,0 +1,32 @@
+[
+  {
+    "key": "exterior measure",
+    "term_en": "exterior measure",
+    "definition_zh": "外测度",
+    "notes": "全空间子集上的广义外测度"
+  },
+  {
+    "key": "measurable set",
+    "term_en": "measurable set",
+    "definition_zh": "可测集",
+    "notes": "依据外测度能赋予测度的集合"
+  },
+  {
+    "key": "almost disjoint",
+    "term_en": "almost disjoint",
+    "definition_zh": "几乎不相交",
+    "notes": "交集测度为零的几何族"
+  },
+  {
+    "key": "pointwise limit",
+    "term_en": "pointwise limit",
+    "definition_zh": "逐点极限",
+    "notes": "函数序列在每个点处的极限"
+  },
+  {
+    "key": "by virtue of",
+    "term_en": "by virtue of",
+    "definition_zh": "依据 / 凭借",
+    "notes": "高频数学论证学术表达"
+  }
+]

@@ -1,0 +1,45 @@
+\documentclass[11pt,twoside,openany]{book}
+
+\usepackage{../../templates/academic_bilingual}
+\input{../../templates/math_macros.tex}
+
+\title{\textbf{Real Analysis} \\ \Large Measure Theory and Integration \\ \vspace{0.5em} \large 中英双语学术注释版演示范例}
+\author{Bilingual Academic Typesetting Project}
+\date{\today}
+
+\begin{document}
+
+\frontmatter
+
+% 1. Interactive Table of Contents
+\cleardoublepage
+\phantomsection
+\pdfbookmark[0]{Contents / 目录}{toc}
+\hypertarget{toc}{}
+\tableofcontents
+
+% 2. Preface
+\cleardoublepage
+\chapter*{Preface / 前言}
+\addcontentsline{toc}{chapter}{Preface / 前言}
+
+\en{This minimal working example demonstrates the typesetting architecture of the Bilingual Academic Textbook Skill.}
+
+\zh{本最小工作范例用于展示双语学术教材排版 Skill 的核心架构与交互特性。}
+
+\mainmatter
+
+% 3. Sample Chapter
+\input{sample_chapter.tex}
+
+\backmatter
+
+% 4. Master Academic Glossary
+\cleardoublepage
+\chapter*{Academic Glossary / 学术术语总表}
+\addcontentsline{toc}{chapter}{Academic Glossary / 学术术语总表}
+\hypertarget{glossary}{}
+
+\input{glossary_table.tex}
+
+\end{document}

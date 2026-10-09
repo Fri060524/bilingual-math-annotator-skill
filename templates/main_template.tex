@@ -1,0 +1,44 @@
+\documentclass[11pt,twoside,openany]{book}
+
+\usepackage{academic_bilingual}
+\input{math_macros.tex}
+
+\title{\textbf{Book Title} \\ \Large Subtitle \\ \vspace{0.5em} \large 中英双语学术注释版}
+\author{Author Name}
+\date{}
+
+\begin{document}
+
+\frontmatter
+
+% 1. Interactive Table of Contents
+\cleardoublepage
+\phantomsection
+\pdfbookmark[0]{Contents / 目录}{toc}
+\hypertarget{toc}{}
+\tableofcontents
+
+% 2. Preface / 前言
+\cleardoublepage
+\chapter*{Preface / 前言}
+\addcontentsline{toc}{chapter}{Preface / 前言}
+
+\en{This edition presents the text with alternating bilingual paragraphs and academic annotations.}
+\zh{本版以中英交替段落形式呈现，并附有严谨的学术页边注释。}
+
+\mainmatter
+
+% 3. Main Chapters
+% \input{src/chapter1/chapter1.tex}
+
+\backmatter
+
+% 4. Master Academic Glossary / 术语总表
+\cleardoublepage
+\chapter*{Academic Glossary / 学术术语总表}
+\addcontentsline{toc}{chapter}{Academic Glossary / 学术术语总表}
+\hypertarget{glossary}{}
+
+% Include generated glossary table here
+
+\end{document}

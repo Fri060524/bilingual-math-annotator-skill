@@ -1,0 +1,265 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{academic_bilingual}[2026/10/09 v1.0 Academic Mathematics Bilingual Annotated Edition Style]
+
+% ==============================================================================
+% 1. Core Mathematical & Typography Packages
+% ==============================================================================
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{mathtools}
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+\RequirePackage{xeCJK}
+\RequirePackage{geometry}
+\RequirePackage{marginnote}
+\RequirePackage{mparhack}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{amsthm}
+\RequirePackage{etoolbox}
+\RequirePackage{booktabs}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage{pdfpages}
+\RequirePackage{emptypage}
+\RequirePackage{longtable}
+\RequirePackage[
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue!70!black,
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  bookmarksnumbered=true,
+  pdfborder={0 0 0}
+]{hyperref}
+
+% ==============================================================================
+% 2. Page Geometry (Asymmetrical margins for academic side annotations)
+% ==============================================================================
+\geometry{
+  a4paper,
+  top=26mm,
+  bottom=26mm,
+  inner=22mm,
+  textwidth=122mm,
+  marginparsep=6mm,
+  marginparwidth=48mm,
+  headheight=14pt
+}
+
+% ==============================================================================
+% 3. Font Configuration
+% ==============================================================================
+% English serif font: TeX Gyre Pagella (Classical Palatino matching Princeton Lectures)
+\setmainfont{texgyrepagella-regular.otf}[
+  BoldFont        = texgyrepagella-bold.otf,
+  ItalicFont      = texgyrepagella-italic.otf,
+  BoldItalicFont  = texgyrepagella-bolditalic.otf
+]
+
+% Mathematics font: TeX Gyre Pagella Math
+\setmathfont{texgyrepagella-math.otf}
+
+% Chinese typography: Songti SC (Classic elegant academic songti for macOS)
+% On Linux/Windows, fallback to FandolSong-Regular or Noto Serif CJK SC if needed
+\setCJKmainfont{Songti SC}[
+  BoldFont = Songti SC Bold
+]
+\setCJKsansfont{PingFang SC}
+\setCJKfamilyfont{zhsong}{Songti SC}[BoldFont=Songti SC Bold]
+\setCJKfamilyfont{zhkai}{Kaiti SC}[BoldFont=Kaiti SC Bold]
+\setCJKfamilyfont{zhhei}{PingFang SC}[BoldFont=PingFang SC Semibold]
+
+\newcommand{\songti}{\CJKfamily{zhsong}}
+\newcommand{\kaishu}{\CJKfamily{zhkai}}
+\newcommand{\heiti}{\CJKfamily{zhhei}}
+
+% ==============================================================================
+% 4. Running Headers & Footers (Hyperlinked Navigation to TOC)
+% ==============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\hyperlink{toc}{\small\textsf{\thepage}\quad\quad\footnotesize\textsc{\nouppercase{\leftmark}}}}
+\fancyhead[RO]{\hyperlink{toc}{\footnotesize\textsc{\nouppercase{\rightmark}}\quad\quad\small\textsf{\thepage}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Style for chapter first page
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\hyperlink{toc}{\small\textsf{\thepage}}}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% ==============================================================================
+% 5. Academic Margin Annotations & Original Page Anchors
+% ==============================================================================
+\newcounter{acnotecnt}
+
+% Anchor for original book page marker
+\newcommand{\origpage}[1]{%
+  \hypertarget{origpage:#1}{}%
+  \marginpar{%
+    \raggedright\linespread{1.0}\selectfont
+    \textsf{\textbf{\textcolor{black!75}{\scriptsize [Orig.\,p.\,#1]}}}%
+    \vspace{0.4em}%
+  }%
+}
+
+% Academic English Marginal Note with Click-to-Jump Navigation
+% Clicking the bold English term jumps to the glossary entry.
+% The first appearance of the term in text is anchored for reciprocal jump back.
+\NewDocumentCommand{\acnote}{O{} m m m}{%
+  \stepcounter{acnotecnt}%
+  \def\@termkey{#1}%
+  \ifx\@termkey\@empty
+    \def\@termkey{#2}%
+  \fi
+  \ifcsname termanchor@\detokenize\expandafter{\@termkey}\endcsname\else
+    \expandafter\gdef\csname termanchor@\detokenize\expandafter{\@termkey}\endcsname{1}%
+    \hypertarget{termfirst:\detokenize\expandafter{\@termkey}}{}%
+  \fi
+  \marginpar{%
+    \raggedright\linespread{1.15}\selectfont
+    \hyperlink{glossary:\detokenize\expandafter{\@termkey}}{{\footnotesize\bfseries #2}}\par
+    {\footnotesize\kaishu\textcolor{black!90}{#3}}%
+    \ifstrempty{#4}{}{\par{\scriptsize\kaishu\textcolor{black!60}{#4}}}%
+    \vspace{0.7em}%
+  }%
+}
+
+% In-Text Soft Blue Highlight & Bidirectional Jump
+% Syntax: \term[dictionary_key]{text_to_display_and_highlight}{Chinese_definition}{context_note}
+\definecolor{termhlbg}{HTML}{E8EFF7}
+
+\ExplSyntaxOn
+\seq_new:N \l__annot_words_seq
+\cs_new_protected:Npn \__annot_highlight_word:nn #1 #2 {
+  \begingroup
+  \setlength{\fboxsep}{1.2pt}%
+  \hyperlink{glossary:\detokenize\expandafter{#1}}{\colorbox{termhlbg}{\textcolor{blue!35!black}{\textbf{#2}}}}%
+  \endgroup
+}
+\NewDocumentCommand{\termhighlight}{m m}{
+  \seq_set_split:Nnn \l__annot_words_seq { ~ } { #2 }
+  \seq_set_map:NNn \l__annot_words_seq \l__annot_words_seq {
+    \__annot_highlight_word:nn { #1 } { ##1 }
+  }
+  \seq_use:Nn \l__annot_words_seq { \c_space_tl }
+}
+\ExplSyntaxOff
+
+\NewDocumentCommand{\term}{O{} m m m}{%
+  \stepcounter{acnotecnt}%
+  \def\@termkey{#1}%
+  \ifx\@termkey\@empty
+    \def\@termkey{#2}%
+  \fi
+  \ifcsname termanchor@\detokenize\expandafter{\@termkey}\endcsname\else
+    \expandafter\gdef\csname termanchor@\detokenize\expandafter{\@termkey}\endcsname{1}%
+    \hypertarget{termfirst:\detokenize\expandafter{\@termkey}}{}%
+  \fi
+  \termhighlight{\@termkey}{#2}%
+  \marginpar{%
+    \raggedright\linespread{1.15}\selectfont
+    \hyperlink{glossary:\detokenize\expandafter{\@termkey}}{{\footnotesize\bfseries \ifstrempty{#1}{#2}{#1}}}\par
+    {\footnotesize\kaishu\textcolor{black!90}{#3}}%
+    \ifstrempty{#4}{}{\par{\scriptsize\kaishu\textcolor{black!60}{#4}}}%
+    \vspace{0.7em}%
+  }%
+}
+
+% ==============================================================================
+% 6. Bilingual Alternating Layout Environments
+% ==============================================================================
+% English paragraph
+\newcommand{\en}[1]{%
+  \par\begingroup\noindent\emergencystretch=2.5em\ignorespaces#1\par\endgroup
+}
+
+% Chinese academic translation (aligned width, 1.15em vertical spacing)
+\newcommand{\zh}[1]{%
+  \par\begingroup
+  \vspace{0.25em}
+  \noindent
+  \small
+  \linespread{1.3}\selectfont
+  \ignorespaces#1\par
+  \endgroup
+  \vspace{1.15em}
+}
+
+% Container for bilingual unit
+\newenvironment{bilingual}{%
+  \par\addvspace{0.4em}%
+}{%
+  \par\addvspace{0.8em}%
+}
+
+% Dual-block inside theorems and proofs
+\newenvironment{enblock}{%
+  \par\begingroup\noindent\emergencystretch=1.5em\ignorespaces
+}{%
+  \par\endgroup
+}
+
+\newenvironment{zhblock}{%
+  \par\begingroup
+  \vspace{0.25em}
+  \noindent
+  \small
+  \linespread{1.3}\selectfont
+  \ignorespaces
+}{%
+  \par\endgroup\vspace{0.9em}
+}
+
+% ==============================================================================
+% 7. Theorem & Mathematical Environments
+% ==============================================================================
+\newtheoremstyle{academicthm}%
+  {1.2em}{1.2em}%
+  {\itshape}{}%
+  {\bfseries}{.}%
+  {0.5em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+
+\theoremstyle{academicthm}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newtheoremstyle{academicdef}%
+  {1.2em}{1.2em}%
+  {\upshape}{}%
+  {\bfseries}{.}%
+  {0.5em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+
+\theoremstyle{academicdef}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+
+% ==============================================================================
+% 8. Chapter and Section Titles (Clickable TOC Navigation)
+% ==============================================================================
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\sffamily}
+  {\hyperlink{toc}{\chaptertitlename\ \thechapter}}{14pt}{\huge\rmfamily\bfseries\hyperlink{toc}}
+\titlespacing*{\chapter}{0pt}{20pt}{30pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\hyperlink{toc}{\thesection}}{1em}{\hyperlink{toc}}
+\titlespacing*{\section}{0pt}{16pt}{10pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\hyperlink{toc}{\thesubsection}}{1em}{\hyperlink{toc}}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\endinput
